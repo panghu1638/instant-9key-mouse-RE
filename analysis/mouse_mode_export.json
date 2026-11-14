@@ -1,0 +1,29 @@
+{
+  "device": {
+    "vid": 12538,
+    "name": "INSTANT USB GAMING MOUSE",
+    "protocol": "Instant A70x"
+  },
+  "exported_at": "2026-11-14 22:29:14",
+  "firmware_state": {
+    "raw_hex": "00 56 09 22 00 23 10 10 06 00 6d 00 00 00 02",
+    "rgb_mode": "0x10",
+    "rgb_mode_name": "breath_6s",
+    "active_dpi_stage": 3,
+    "fw_fields": {
+      "b1_4": "56092200",
+      "b5": "0x23",
+      "b6": "0x10",
+      "b10": "0x6D",
+      "b14": "0x02"
+    }
+  },
+  "session_settings": {
+    "dpi": [
+      1,
+      1600,
+      15
+    ],
+    "light": 16
+  }
+}

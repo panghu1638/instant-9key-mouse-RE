@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+"""DPI 命令参数扫描: 解码读回缓冲中 DPI 相关字节。"""
+import hid, time
+
+VID = 0x30FA
+
+def open_cfg():
+    for info in hid.enumerate(VID, 0):
+        if info['interface_number'] == 1 and info['usage_page'] == 0xFF01:
+            d = hid.device(); d.open_path(info['path']); return d
+
+cfg = open_cfg()
+
+def rd():
+    return bytes(cfg.get_feature_report(7, 16)[1:])
+
+def send(data):
+    cfg.send_feature_report(bytes([7] + data + [0]*(7-len(data))))
+    time.sleep(0.15)
+
+print(f'基线: {rd().hex(" ")}')
+print()
+# 变量: AD=活动档, DP=DPI编码, EP=启用掩码
+cases = [
+    ('AD=0 DP=0x81 EP=0x0F', [0x09, 0x00, 0x81, 0x0F]),
+    ('AD=0 DP=0x83 EP=0x0F', [0x09, 0x00, 0x83, 0x0F]),
+    ('AD=0 DP=0x86 EP=0x0F', [0x09, 0x00, 0x86, 0x0F]),
+    ('AD=0 DP=0x8b EP=0x0F', [0x09, 0x00, 0x8b, 0x0F]),
+    ('AD=0 DP=0x8b EP=0x03', [0x09, 0x00, 0x8b, 0x03]),
+    ('AD=0 DP=0x8b EP=0x01', [0x09, 0x00, 0x8b, 0x01]),
+    ('AD=1 DP=0x84 EP=0x01', [0x09, 0x01, 0x84, 0x01]),
+    ('AD=2 DP=0x84 EP=0x01', [0x09, 0x02, 0x84, 0x01]),
+    ('AD=3 DP=0x84 EP=0x01', [0x09, 0x03, 0x84, 0x01]),
+    ('AD=0 DP=0x88 EP=0x0F', [0x09, 0x00, 0x88, 0x0F]),
+]
+for name, c in cases:
+    send(c)
+    print(f'{name:22s} => {rd().hex(" ")}')
+cfg.close()
